@@ -100,4 +100,4 @@ Button(jiemian,text="清空入参",width=9,command = button3).place(x=548, y=370
 Button(jiemian,text="格式化",width=9,command = button4).place(x=760, y=690)
 
 
-mainloop()
+jiemian.mainloop()
