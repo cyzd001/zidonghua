@@ -17,33 +17,79 @@ def readjson():
     wb = xlwt.Workbook('json-shuju.xls')
     ws = wb.add_sheet("caipiaopeilv")
     lb = url.get()
-    ws.write(0, 0, "url")
-    ws.write(1, 0, lb)
+    data = datain.get("0.0", "end").strip()
+    if data == "":
+        ws.write(0, 0, "url")
+        ws.write(1, 0, lb)
+    elif data != "":
+        data001=eval(datain.get("0.0", "end").strip())
+        ws.write(0, 0, "url")
+        ws.write(1, 0, lb)
+        num = [a for a in data001]
+        for b in range(len(num)):
+            ws.write(0, b + 1, num[b])
+        for c in range(len(num)):
+            ws.write(1, c + 1, data001[num[c]])
+
     wb.save('json-shuju.xls')
-    print(lb)
 def renwu001():
-    data001= eval(datain.get("0.0","end").strip())
-    # data001 = {'code': 'hbk3', 'betCode': ''}
-    if numberChosen.get()=="post":
+    """根据入参获取出参"""
+    data = datain.get("0.0", "end").strip()
+    if data == "":
+        """入参为空"""
+        return renwu004(data)
+    elif data != "":
+        """入参不为空"""
+        return renwu003(data)
+    # print(m.url)
+    # print(data001)
+def renwu002():
+    """出参展示在文本框"""
+    dataout.insert("0.0",renwu001())
+def renwu003(data):
+    """输出数据能够直接格式化"""
+    data001=eval(data)#将str类型字符串字典化eval()
+    if numberChosen.get() == "post":
         m = requests.post(url=url.get(), data=data001)
         json_str = json.dumps(eval(m.text), sort_keys=True, indent=2)
-    elif numberChosen.get()=="get":
+    elif numberChosen.get() == "get":
         m = requests.get(url=url.get(), data=data001)
         json_str = json.dumps(eval(m.text), sort_keys=True, indent=2)
-    elif numberChosen.get()=="put":
+    elif numberChosen.get() == "put":
         m = requests.put(url=url.get(), data=data001)
         json_str = json.dumps(eval(m.text), sort_keys=True, indent=2)
-    elif numberChosen.get()=="delete":
+    elif numberChosen.get() == "delete":
         m = requests.put(url=url.get(), data=data001)
         json_str = json.dumps(eval(m.text), sort_keys=True, indent=2)
     else:
-        json_str ="请选择发送方式"
-    # print(m.status_code)
-    # print(m.url)
-    # print(type(data001))
+        json_str = "很明显有问题，没选方式"
     return json_str
-def renwu002():
-    dataout.insert("0.0",renwu001())
+def renwu004(data):
+    """输出数据不能直接格式化"""
+    m = requests.post(url=url.get(), data=data)
+    if numberChosen.get() == "post":
+        try:
+            json_str = json.dumps(eval(m.text), sort_keys=True, indent=2)
+        except:
+            json_str = m.text
+    elif numberChosen.get() == "get":
+        try:
+            json_str = json.dumps(eval(m.text), sort_keys=True, indent=2)
+        except:
+            json_str = m.text
+    elif numberChosen.get() == "put":
+        try:
+            json_str = json.dumps(eval(m.text), sort_keys=True, indent=2)
+        except:
+            json_str = m.text
+    elif numberChosen.get() == "delete":
+        try:
+            json_str = json.dumps(eval(m.text), sort_keys=True, indent=2)
+        except:
+            json_str = m.text
+    else:
+        json_str = "很明显有问题，没选方式"
+    return json_str
 # 设置窗口属性
 jiemian = Tk()
 jiemian.title("接口测试工具")
@@ -84,15 +130,23 @@ def button1():
     dataout.delete("0.0", "end")
     renwu001()
     renwu002()
+    readjson()
 def button2():
     dataout.delete("0.0", "end")
 def button3():
     datain.delete("0.0", "end")
 def button4():
-    data002 = eval(dataout.get("0.0", "end").strip())
-    json_str = json.dumps(data002, sort_keys=True, indent=2)
-    dataout.delete("0.0", "end")
-    dataout.insert("0.0",json_str )
+    try:
+        data002 = eval(dataout.get("0.0", "end").strip())
+        json_str = json.dumps(data002, sort_keys=True, indent=2)
+        dataout.delete("0.0", "end")
+        dataout.insert("0.0", json_str)
+    except:
+        data002 = dataout.get("0.0", "end").strip()
+        dataout.delete("0.0", "end")
+        dataout.insert("0.0", "数据格式不标准，无法格式化")
+
+
 '''设置按钮'''
 Button(jiemian,text="提交",width=8,command = button1).place(x=549, y=190)
 Button(jiemian,text="清空出参",width=9,command = button2).place(x=548, y=280)
