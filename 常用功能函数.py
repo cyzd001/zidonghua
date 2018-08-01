@@ -6,6 +6,26 @@ import HTMLTestRunner
 import time
 import os
 import sys
+
+'''三个数相加和值，几种组合'''
+def hezhi(num):
+    import random
+    n = 1
+    result = {}
+    while n <= 1000:
+        a = random.randint(0, 9)
+        b = random.randint(0, 9)
+        c = random.randint(0, 9)
+        if a + b + c == num:
+            result[n] = (a, b, c)
+            n = n + 1
+    print(result)
+    print(n)
+    func = lambda z: dict([(x, y) for y, x in z.items()])
+    print((func(func(result))))
+    num = [a for a in func(func(result))]
+    print(len(num))
+hezhi(21)
 ''''''
 def suiji(num):
     """生成num个随机数功能函数"""
