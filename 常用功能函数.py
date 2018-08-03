@@ -6,7 +6,24 @@ import HTMLTestRunner
 import time
 import os
 import sys
-''''''
+
+"""猜数字游戏"""
+a = random.randint(1,10)
+c = 1
+while c == 1:
+    b = int(input("请输入一个数："))
+    if a == b:
+        print("恭喜你猜对了")
+        c = 0
+        print ("正确数字：",a)
+        # break
+    elif a < b:
+        print("对不起猜错了，请再输入小一点数")
+        c = 1
+    else:
+        print("对不起猜错了，请再输入大一点数")
+        c = 1
+
 """随机数"""
 def suiji(num):
     """生成num个随机数功能函数"""
