@@ -261,3 +261,19 @@ print(a)
 # runner.run(suite)
 #
 # ''''''
+"""next是要判断的字符串"""
+"if next.isdigit():" 都是数字
+"if next.isalnum():" 都是数字或者字母
+"if next.isalpha():" 都是字母
+"if next.islower():" 都是小写
+"if next.isupper():" 都是大写
+"if next.istitle():" 都是首字母大写，像标题
+"if next.isspace():" 都是空白字符、\t、\n、\r
+""""""
+"""大小写字母转换"""
+s = 'hEllo pYthon'
+print s.upper()
+print s.lower()
+print s.capitalize()
+print s.title()
+
