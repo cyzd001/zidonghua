@@ -17,11 +17,47 @@ def jiemian_info():
 jiemian = Tk()
 jiemian.title("测试装备")
 a, b = jiemian_info()
-jiemian.geometry("800x600+%d+%d" % (a, b))
+# jiemian.geometry("800x600+%d+%d" % (a, b))
+class login(object):
+    def __init__(self, master=None):
+        self.root = master  # 定义内部变量root
+        self.root.geometry("300x150+%d+%d" % (a, b)) # 设置窗口大小
+        self.urll = 'http://192.168.18.38:8073/login'
+        self.createPage()
+    def createPage(self):
+        self.page = Frame(self.root)  # 创建Frame
+        self.page.pack()
+        # Label(self.page).grid(row=0, stick=W)
+        Label(self.page, text="用户：").grid(row=0, column=0, stick=E,pady=10)
+        Label(self.page, text="账号：").grid(row=1, column=0, stick=E)
+        '''设置文本框'''
+        self.url = Entry(self.page, font=('微软雅黑', 10), width=15)
+        self.url.grid(row=0, column=1, stick=E,pady=10)
+        # var_pwd = StringVar()
+        self.pwd = Entry(self.page, font=('微软雅黑', 10), width=15)
+        self.pwd.grid(row=1, column=1, stick=E)
+        '''设置按钮'''
+        Button(self.page, text="登录", width=10, command=self.button1).grid(row=2, column=1, stick=W+E,pady=10)
+    def button1(self):
+        datain = {'SJH': self.url.get(), 'PWD': self.pwd.get()}
+        # num = int(url.get())
+        # print(type(num))
+        # print(datain)
+        m = requests.get(url=self.urll, data=datain)
+        # print(m.text)
+        # print(type(eval(m.text)))
+        msg = eval(m.text)
+        if msg['msg_code'] == '200':
+            messagebox.showinfo('提示', '成功登录')
+            self.page.destroy()
+            mainpage(self.root)
+        elif msg['msg_code'] == '204':
+            messagebox.showinfo('提示', '密码和用户名错误')
+            self.page.pack()
 class mainpage(object):
     def __init__(self, master=None):
         self.root= master  # 定义内部变量root
-        # self.root.geometry("1200x800+%d+%d" % (a, b))
+        self.root.geometry("800x600+%d+%d" % (a, b))
         self.createPage()
     def createPage(self):
         self.inputPage = InputFrame(self.root)  # 创建不同Frame
@@ -343,5 +379,6 @@ class jiekouFrame(Frame):
         self.json_str4 = json.dumps(eval(self.data003), sort_keys=True, indent=2, ensure_ascii=False)
         self.dataout.delete("0.0", "end")
         self.dataout.insert("0.0", self.json_str4)
-mainpage(jiemian)
+
+login(jiemian)
 jiemian.mainloop()
