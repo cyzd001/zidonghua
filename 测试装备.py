@@ -7,6 +7,7 @@ from tkinter import ttk
 import xlrd
 import requests
 import json
+import qrcode
 def jiemian_info():
     ws = jiemian.winfo_screenwidth()
     hs = jiemian.winfo_screenheight()
@@ -64,11 +65,12 @@ class mainpage(object):
         self.queryPage = QueryFrame(self.root)
         self.dingcanpage = dingcanFrame(self.root)
         self.jiekoupage = jiekouFrame(self.root)
+        self.erweima = EWMFrame(self.root)
         self.inputPage.pack()  # 默认显示数据录入界面
         menubar = Menu(jiemian)
         fmenu1 = Menu(jiemian, tearoff=0)
         fmenu2 = Menu(jiemian, tearoff=0)
-        for item in ['网站', '构建','接口', '订餐']:
+        for item in ['网站', '构建','接口', '生成二维码','订餐']:
             if item == '网站':
                 fmenu1.add_command(label=item,command=self.inputData)
                 fmenu1.add_separator()
@@ -78,6 +80,10 @@ class mainpage(object):
                 fmenu1.add_separator()
             elif item =='接口':
                 fmenu1.add_command(label=item,command=self.jiekou)
+                """添加横线"""
+                fmenu1.add_separator()
+            elif item =='生成二维码':
+                fmenu1.add_command(label=item,command=self.erweim)
                 """添加横线"""
                 fmenu1.add_separator()
             else:
@@ -95,18 +101,28 @@ class mainpage(object):
         self.queryPage.pack_forget()
         self.dingcanpage.pack_forget()
         self.jiekoupage.pack_forget()
+        self.erweima.pack_forget()
     def queryData(self):
         self.queryPage.pack()
         self.inputPage.pack_forget()
         self.dingcanpage.pack_forget()
         self.jiekoupage.pack_forget()
+        self.erweima.pack_forget()
     def dingcan(self):
+        self.erweima.pack_forget()
         self.dingcanpage.pack()
         self.inputPage.pack_forget()
         self.queryPage.pack_forget()
         self.jiekoupage.pack_forget()
     def jiekou(self):
+        self.erweima.pack_forget()
         self.jiekoupage.pack()
+        self.dingcanpage.pack_forget()
+        self.inputPage.pack_forget()
+        self.queryPage.pack_forget()
+    def erweim(self):
+        self.erweima.pack()
+        self.jiekoupage.pack_forget()
         self.dingcanpage.pack_forget()
         self.inputPage.pack_forget()
         self.queryPage.pack_forget()
@@ -379,6 +395,28 @@ class jiekouFrame(Frame):
         self.json_str4 = json.dumps(eval(self.data003), sort_keys=True, indent=2, ensure_ascii=False)
         self.dataout.delete("0.0", "end")
         self.dataout.insert("0.0", self.json_str4)
+class EWMFrame(Frame):
+    def __init__(self, master=None):
+        Frame.__init__(self, master)
+        self.root = master  # 定义内部变量root
+        self.createPage()
+    def createPage(self):
+        Label(self, text="输入：").grid(row=0, column=0, stick=E, pady=5)
+        self.url = Entry(self, font=('微软雅黑', 10), width=40)  # ,width=40
+        self.url.grid(row=0, column=1, stick=E, pady=10, padx=5)
+        self.label_img = Label(self, text="此处生成二维码")  # ,image=button()  ,image=path ,labelanchor=NW
+        self.label_img.grid(row=2, column=1, stick=E + W, pady=10)  # , ipady=20, ipadx=20  row=3, column=1
+        Button(self, text="生成二维码", width=28, command=self.button).grid(row=1, column=1, stick=E + W, pady=10)
+    def button(self):
+        # img, path, label = None, None, None
+        global img, path, label
+        self.img = qrcode.make(self.url.get())
+        self.img.save("tupian.gif")
+        self.path = PhotoImage(file='tupian.gif')
+        self.label = Label(self, image=self.path, width=340, height=340)  # ,width=340,height=340
+        self.label.grid(row=3, column=1, stick=E + W, pady=10, ipady=10, ipadx=10)
 
-login(jiemian)
+
+# login(jiemian)
+mainpage(jiemian)
 jiemian.mainloop()
